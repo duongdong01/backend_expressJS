@@ -1,6 +1,5 @@
 var express = require('express');
 const passport = require('passport')
-var cors=require('cors');
 var router = express.Router();
 const UserController=require('../controllers/userController');
 
@@ -11,7 +10,7 @@ const passportConfig=require('../middlewares/passport');
 //   res.send('respond with a resource');
 // });
 router.post('/signup',UserController.signUp);
-router.post('/signin',cors(),passport.authenticate('local',{session:false}),UserController.signin);
+router.post('/signin',passport.authenticate('local',{session:false}),UserController.signin);
 router.get('/secret',passport.authenticate('jwt',{session:false}),UserController.secret);
 
 module.exports = router;

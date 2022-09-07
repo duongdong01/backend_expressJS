@@ -10,14 +10,12 @@ const encodeToken=(userId)=>{
         iss:"Duong",
         sub:userId,  // sub 1 truong duy nhat phan biet cac user
         iat:new Date().getTime(),
-        exp:new Date().setDate(new Date().getDate() +3)  // set thoi gian het han token
+        exp:new Date().setDate(new Date().getDate() +7)  // set thoi gian het han token
 
     },JWT_SECRET)
 };
 
  const signUp =async (req,res,next)=>{
-    //  console.log("req body: ",req.body);
-        console.log('Call function signUp');
         const { username,email,admin, password}=req.body;
         // check if there is o user with the some user
         const foundUser=await User.findOne({email});
@@ -40,11 +38,15 @@ const encodeToken=(userId)=>{
     // assign a token
     const token =encodeToken(req.user._id) ; // user nay duoc nhan tu ben passport o ham done
     res.setHeader('Authorization',token);
-    return res.status(200).json({success :true});
+    console.log(req.user);
+    return res.status(200).json({success :true,token:token,info:req.user});
 };
 
  const secret =async (req,res,next)=>{  
-    return res.status(200).json({resourse:true})
+   const users=await User.findById(req.user._id);
+   console.log(users);
+
+    return res.status(200).json({resourse:true,username:users.username})
 };
 
 module.exports={
