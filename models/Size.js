@@ -4,15 +4,16 @@ const Schema=mongoose.Schema;
 const sizeSchema=new Schema({
     product:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:'Product'
+        ref:'Product',
+        required:true
     },
     name:{
         type:String,
-        require:true
+        required:true
     },
     numberInStock:{
         type:Number,
-        require:true,
+        required:true,
         min:0,
         default:0
     }

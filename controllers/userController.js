@@ -46,7 +46,7 @@ const encodeToken=(userId)=>{
    const users=await User.findById(req.user._id);
    console.log(users);
 
-    return res.status(200).json({resourse:true,username:users.username})
+    return res.status(200).json({resourse:true,_id:users._id,username:users.username})
 };
 
 module.exports={

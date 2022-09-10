@@ -35,11 +35,11 @@ const searchProductPage=async(search='',page=1,limit=50,sort='-_id')=>{
         }
 
 const searchProduct=async (req,res,next)=>{
-    console.log("call searchProducts function")
-    console.log(req.query);
+    // console.log("call searchProducts function")
+    // console.log(req.query);
     try{
 
-        const {query, page,limit,sort}={...req.query};
+        const {query, page,limit,sort}={...req.query,...req.params};
         const products=await searchProductPage(query,page,limit,sort) 
         console.log(products);
        return res.status(200).json({success:true,products,status:'ok'})
@@ -52,7 +52,7 @@ const searchProduct=async (req,res,next)=>{
 const addProduct = async(req,res,next)=>{
     try{
 
-        console.log("call function add product")
+        // console.log("call function add product")
         const {size , ...rest}=req.body;
          const product=  await Product.create(rest);
          const sizeProudct=size.map(size=>({
@@ -60,7 +60,7 @@ const addProduct = async(req,res,next)=>{
             product:product._id
         }))
         await Size.create(sizeProudct);
-        console.log("thêm thành công ");
+        // console.log("thêm thành công ");
         const result={...product,sizes:sizeProudct}
        return  res.status(200).json({ success: true,result ,status: 'Bạn đã thêm sản phẩm thành công' })
 
@@ -71,8 +71,30 @@ const addProduct = async(req,res,next)=>{
     }
 }
 
+const getProductId=async(req,res,next)=>{
+    try{
+            // console.log(id)
+        // console.log(req.params)
+        const product=await Product.findById(req.params.productId).lean();
+        if(!product){
+                next(error)
+        }
+        else{
+            await Product.updateOne(
+               {_id:req.params.productId}, { $inc: { view:1 } }
+            ).exec()
+            const size=await Size.find({product:product._id}).select('-_id name numberInStock').lean();
+            const result={...product,size};
+            res.status(200).json({success:true,result,status:"Lấy thành công"})
+        }
+        }
+    catch(error){
+            next(error)
+        }
+}
 
 module.exports={
     addProduct,
-    searchProduct
+    searchProduct,
+    getProductId
 }

@@ -28,6 +28,11 @@ const productSchema=new Schema({
         min:0,
         required:true
     },
+    originalPrice: {
+        type: Number,
+        min: 0,
+        required: true
+    },
     sold:{
         type:Number,
         default:0,
