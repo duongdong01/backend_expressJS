@@ -26,7 +26,7 @@ const searchProductPage=async(search='',page=1,limit=50,sort='-_id')=>{
          if(search){
             query.$text={$search:search};
          }
-         console.log(query);
+        //  console.log(query);
          // chay nhieu promise cung luc va tra ve tat ca promise cung luc
          const [products,total] = await Bluebird.all([searchProductSize(query,vPage,vLimit,sort),Product.countDocuments(query)])
          const pages=Math.ceil(total/vLimit) //lam tron page
@@ -35,13 +35,11 @@ const searchProductPage=async(search='',page=1,limit=50,sort='-_id')=>{
         }
 
 const searchProduct=async (req,res,next)=>{
-    // console.log("call searchProducts function")
-    // console.log(req.query);
     try{
 
         const {query, page,limit,sort}={...req.query,...req.params};
         const products=await searchProductPage(query,page,limit,sort) 
-        console.log(products);
+        // console.log(products);
        return res.status(200).json({success:true,products,status:'ok'})
     }
     catch(error){

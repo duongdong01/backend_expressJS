@@ -38,13 +38,13 @@ const encodeToken=(userId)=>{
     // assign a token
     const token =encodeToken(req.user._id) ; // user nay duoc nhan tu ben passport o ham done
     res.setHeader('Authorization',token);
-    console.log(req.user);
+    // console.log(req.user);
     return res.status(200).json({success :true,token:token,info:req.user});
 };
 
  const secret =async (req,res,next)=>{  
    const users=await User.findById(req.user._id);
-   console.log(users);
+//    console.log(users);
 
     return res.status(200).json({resourse:true,_id:users._id,username:users.username})
 };

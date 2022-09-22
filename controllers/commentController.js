@@ -17,9 +17,6 @@ const userComment=async(req,res,next)=>{
          const newRating=((productRarting.rating+totalRating)/(ratingProduct.length+1)).toFixed(1);
 
          await Product.updateOne({_id:product},{ $set: { rating: newRating }})
-        //  console.log("rating comment: ",ratingProduct)
-        //  console.log("totalRating ",totalRating);
-        //  console.log("new product ",newRating);
         res.status(200).json({success:true,reusult,status:"ok"})
     }
     catch(error){

@@ -1,11 +1,11 @@
 var mongoose=require('mongoose')
-var Schema=mongoose.Schema;
+var Schema=mongoose.Schema
 
-const CartSchema=new Schema({
-    user:{
+var orderItemSchema=new Schema({
+    order:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:'User',
-        required:true
+        ref:'Order',
+        required:true 
     },
     product:{
         type:mongoose.Schema.Types.ObjectId,
@@ -19,9 +19,13 @@ const CartSchema=new Schema({
     quantity:{
         type:Number,
         required:true,
-        default:1
+        min:1
+    },
+    price:{
+        type:Number,
+        required:true
     }
+})
 
-},{timestamps:true})
-
-module.exports=mongoose.model("Cart",CartSchema)
+orderItemSchema.index({order:1,product:1})
+module.exports=mongoose.model('OrderItem',orderItemSchema);
