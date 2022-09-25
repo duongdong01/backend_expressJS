@@ -25,7 +25,7 @@ var orderItemSchema=new Schema({
         type:Number,
         required:true
     }
-})
+},{timestamps:true})
 
 orderItemSchema.index({order:1,product:1})
 module.exports=mongoose.model('OrderItem',orderItemSchema);

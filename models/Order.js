@@ -27,7 +27,7 @@ var orderSchema=new Schema({
         type:Boolean,
         default:false
     }
-});
+},{timestamps:true});
 
 orderSchema.index({user:1})
 module.exports=mongoose.model('Order',orderSchema);

@@ -7,13 +7,14 @@ const Size=require('../models/Size')
 const Bluebird=require('bluebird')
 
 
-const searchOrder = async (querySearch)=>{
-        const {status,cancel,user}={...querySearch}
-        const query={user,cancel}
-        if(status){
-            query.status=status
-        }
-        const orderSearch =await Order.find(query).populate('user').sort('-_id').lean()
+const searchOrder = async (querySearch,limit,page)=>{
+
+        const orderSearch =await Order.find(querySearch)
+                                    .skip((page-1)*limit)
+                                    .limit(limit)
+                                    .populate('user')
+                                    .sort('-_id')
+                                    .lean()
 
         return Bluebird.map(orderSearch,async(item)=>{
             const orderItems= await OrderItem.find({order : {$in : item._id }}).populate('product').lean()
@@ -25,11 +26,24 @@ const searchOrder = async (querySearch)=>{
         },{concurrency : orderSearch.length})
 }
 
+const searchOrderPage= async(querySearch,limit=50,page=1) => {
+            const vLimit=parseInt(limit)
+            const vPage=parseInt(page)
+            const {status,cancel,user}={...querySearch}
+            const query={user,cancel}
+            if(status){
+                query.status=status
+            }
+            const [listOrder,totalItem]=await Bluebird.all([searchOrder(query,vLimit,vPage),Order.countDocuments(query)])  
+            const pages=Math.ceil(totalItem/vLimit);
+            return {listOrder,totalItem,pages};
+}
+
 const getOrder=async (req,res,next)=>{
         try{
-            const {status,user,cancel}={...req.query}
+            const {status,user,cancel,limit,page}={...req.query}
             console.log("query: ",req.query)
-            const listOrder=await searchOrder({status,user,cancel})
+            const listOrder=await searchOrderPage({status,user,cancel},limit,page)
             // console.log("listOrder: ",listOrder[0].items)
             res.status(200).json({success:true,listOrder})
         }   
