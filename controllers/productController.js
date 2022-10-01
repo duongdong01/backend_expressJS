@@ -19,12 +19,15 @@ const searchProductSize = async(query,page,limit,sort)=>{
         },{concurrency:products.length})
 }
 
-const searchProductPage=async(search='',page=1,limit=50,sort='-_id')=>{
+const searchProductPage=async(search='',subject='',page=1,limit=50,sort='-_id')=>{
         const vPage=parseInt(page);
         const vLimit=parseInt(limit)
          const query={}
          if(search){
             query.$text={$search:search};
+         }
+         if(subject){
+            query.subject=subject;
          }
         //  console.log(query);
          // chay nhieu promise cung luc va tra ve tat ca promise cung luc
@@ -37,8 +40,8 @@ const searchProductPage=async(search='',page=1,limit=50,sort='-_id')=>{
 const searchProduct=async (req,res,next)=>{
     try{
 
-        const {query, page,limit,sort}={...req.query,...req.params};
-        const products=await searchProductPage(query,page,limit,sort) 
+        const {search,subject, page,limit,sort}={...req.query,...req.params};
+        const products=await searchProductPage(search,subject,page,limit,sort) 
         // console.log(products);
        return res.status(200).json({success:true,products,status:'ok'})
     }

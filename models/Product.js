@@ -40,6 +40,10 @@ const productSchema=new Schema({
     view:{
         type:Number,
         default:0
+    },
+    subject:{
+        type:Boolean,
+        required:true
     }
 },{timestamps:true});
 productSchema.index({ name: 'text', description: 'text', category: 'text' })
