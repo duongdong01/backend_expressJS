@@ -21,9 +21,9 @@ const Size=require('../models/Size')
         try{
 
             const {user,product,size,quantity}={...req.body}
-           const result= await checkTocart({user,product,size,quantity})
+            const result= await checkTocart({user,product,size,quantity})
 
-            res.status(200).json({success:true,result,status:"ok"})
+            return res.status(200).json({success:true,result,status:"ok"})
         }
         catch(error){
             next(error)
@@ -49,7 +49,7 @@ const Size=require('../models/Size')
             carts.forEach(item=>{
                 item.product.sizes= allSizes.filter(size=>size.product.toString()===item.product._id.toString())
             })
-            res.status(200).json({success:true,carts,status:"ok"})
+            return res.status(200).json({success:true,carts,status:"ok"})
             
         }catch(error){
             next(error)
@@ -106,7 +106,7 @@ const Size=require('../models/Size')
         try{
             const {cartId}=req.body
             await  Cart.deleteMany({_id : { $in:cartId } })
-            res.status(200).json({success:true,status:"ok"})
+            return res.status(200).json({success:true,status:"ok"})
         }catch(error){
             next(error)
         }

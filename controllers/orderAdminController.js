@@ -55,7 +55,7 @@ const getOrder = async (req,res,next)=>{
         // console.log("query: ",req.query)
         const listOrder=await searchOrderPage({status,cancel},limit,page)
         // console.log("listOrder: ",listOrder[0].items)
-        res.status(200).json({success:true,listOrder})
+        return res.status(200).json({success:true,listOrder})
     }   
     catch(error){
         next(error)
@@ -81,7 +81,7 @@ const acceptStatus = async (req,res,next)=>{
                             {$inc : {sold:item.quantity} }
                         )
             },{concurrency:orderItems.length})
-            res.status(200).json({success:true,orderUpdateStatus,status:"ok"})
+            return res.status(200).json({success:true,orderUpdateStatus,status:"ok"})
         }catch(error){
             next(error)
         }

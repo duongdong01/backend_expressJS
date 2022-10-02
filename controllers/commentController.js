@@ -17,7 +17,7 @@ const userComment=async(req,res,next)=>{
          const newRating=((productRarting.rating+totalRating)/(ratingProduct.length+1)).toFixed(1);
 
          await Product.updateOne({_id:product},{ $set: { rating: newRating }})
-        res.status(200).json({success:true,reusult,status:"ok"})
+         return res.status(200).json({success:true,reusult,status:"ok"})
     }
     catch(error){
         next(error)
@@ -29,7 +29,7 @@ const getComment= async(req,res,next)=>{
             const comments=await Comment.find({product:req.params.productId})
             // console.log(comments)
             const total=comments.length
-            res.status(200).json({success:true,comments,total,status:"ok"})
+            return res.status(200).json({success:true,comments,total,status:"ok"})
         }catch(error){
             next(error)
         }

@@ -63,7 +63,7 @@ const addProduct = async(req,res,next)=>{
         await Size.create(sizeProudct);
         // console.log("thêm thành công ");
         const result={...product,sizes:sizeProudct}
-       return  res.status(200).json({ success: true,result ,status: 'Bạn đã thêm sản phẩm thành công' })
+        return  res.status(200).json({ success: true,result ,status: 'Bạn đã thêm sản phẩm thành công' })
 
 
     }
@@ -86,7 +86,7 @@ const getProductId=async(req,res,next)=>{
             ).exec()
             const size=await Size.find({product:product._id}).select('-_id name numberInStock').lean();
             const result={...product,size};
-            res.status(200).json({success:true,result,status:"Lấy thành công"})
+            return  res.status(200).json({success:true,result,status:"Lấy thành công"})
         }
         }
     catch(error){
