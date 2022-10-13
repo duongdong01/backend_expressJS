@@ -1,5 +1,7 @@
 const mongoose=require('mongoose');
 const User = require('../models/User');
+const OrderItem = require('../models/OrderItem');
+const Order = require('../models/Order');
 const JWT =require('jsonwebtoken');
 const {JWT_SECRET}=require('../config/index')
 
@@ -49,8 +51,60 @@ const encodeToken=(userId)=>{
     return res.status(200).json({resourse:true,_id:users._id,username:users.username})
 };
 
+const getUser= async (req,res,next)=>{
+    try{
+
+        const users=await User.find({}).lean()
+        // console.log(users)
+        res.status(200).json({success:true,users,total:users.length})
+    }catch(error){
+        next(error)
+    }
+}
+
+const getUserBin= async (req,res,next)=>{
+    try{
+
+        const users = await User.findWithDeleted({deleted:true}).lean()
+        // console.log(users)
+        res.status(200).json({success:true,users,total:users.length})
+    }catch(error){
+        next(error)
+    }
+}
+const deleteUser = async(req, res, next)=>{
+    try{
+        const {_id} ={...req.body}
+        // console.log("_id ",_id)
+        await User.delete({_id:_id})
+        const orderId= await Order.find({user:_id})
+        await OrderItem.delete({order: { $in: orderId}})
+        await Order.delete({user:_id})
+        res.status(200).json({success:true})
+    }catch(error){
+        next(error)
+    }
+}
+
+const restoreUser= async (req,res,next)=>{
+        try{
+                const {_id}= {...req.body}
+                await User.restore({_id:_id,deleted:true})
+                // const user= await User.find({_id})
+                const orderId= await Order.find({user:_id})
+                await OrderItem.restore({order: {$in:orderId }})
+                await Order.restore({user:_id})
+            res.status(200).json({success:true})
+        }catch(error){
+            next(error)
+        }
+}
 module.exports={
     signUp,
     signin,
-    secret
+    secret,
+    getUser,
+    deleteUser,
+    getUserBin,
+    restoreUser
 };

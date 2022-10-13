@@ -1,4 +1,8 @@
 const Product = require('../models/Product')
+const Cart = require('../models/Cart')
+const Wishlist = require('../models/Wishlist')
+const OrderItem= require('../models/OrderItem')
+const Order= require('../models/Order')
 const Size=require('../models/Size');
 var Bluebird = require("bluebird");
 
@@ -40,7 +44,7 @@ const searchProductPage=async(search='',subject='',page=1,limit=50,sort='-_id')=
 const searchProduct=async (req,res,next)=>{
     try{
 
-        const {search,subject, page,limit,sort}={...req.query,...req.params};
+        const {search,subject, page,limit,sort}={...req.query,...req.params}
         const products=await searchProductPage(search,subject,page,limit,sort) 
         // console.log(products);
        return res.status(200).json({success:true,products,status:'ok'})
@@ -94,8 +98,53 @@ const getProductId=async(req,res,next)=>{
         }
 }
 
+const getProductBin = async(req,res,next)=>{
+    try{
+        console.log("call bin product")
+            const products = await Product.findWithDeleted({deleted:true}).lean()
+            return res.status(200).json({success:true,products,total: products.length})
+    }catch(error){
+        next(error)
+    }
+}
+
+const  deleteProduct =async(req,res,next)=>{
+    try{
+
+        const {_id} = {...req.body}
+        const orderItem = await OrderItem.find({product:_id})
+        await OrderItem.delete({product:_id})
+        await Order.delete( { _id : orderItem.order })
+        await Cart.deleteMany( {product: { $in :_id }} )
+        await Wishlist.deleteMany( {product: { $in :_id }} )
+        await Product.delete({_id})
+        res.status(200).json({success:true})
+    }
+   catch(error){
+        next(error)
+   }
+}
+
+const restoreProduct= async(req,res,next)=>{
+    try{
+        const {_id}= {...req.body}
+        await Product.restore({_id})
+        await OrderItem.restore({product: _id})
+        const orderItemId = await OrderItem.find({product:_id})
+        await Order.restore({_id :{ $in : orderItemId.order}})
+        res.status(200).json({success:true})
+    }
+    catch(error){
+        next(error)
+    }
+
+}
+
 module.exports={
     addProduct,
     searchProduct,
-    getProductId
+    getProductId,
+    deleteProduct,
+    restoreProduct,
+    getProductBin
 }

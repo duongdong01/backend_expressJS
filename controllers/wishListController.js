@@ -19,7 +19,7 @@ const getWishList = async(req,res,next)=>{
     try{
             const {userId}={...req.params}
             // console.log("param: ",req.params)
-            const listWL= await WishList.find({user:userId}).populate('product').lean()
+            const listWL= await WishList.find({user:userId}).sort('-_id').populate('product').lean()
             // console.log('list WL: ',listWL)
             return res.status(200).json({success:true,listWL})
     }

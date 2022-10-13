@@ -28,4 +28,8 @@ var orderItemSchema=new Schema({
 },{timestamps:true})
 
 orderItemSchema.index({order:1,product:1})
+
+var mongooseDelete = require('mongoose-delete');
+orderItemSchema.plugin(mongooseDelete,{deteledAt:true ,overrideMethods: true}) 
+
 module.exports=mongoose.model('OrderItem',orderItemSchema);

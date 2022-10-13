@@ -47,4 +47,7 @@ const productSchema=new Schema({
     }
 },{timestamps:true});
 productSchema.index({ name: 'text', description: 'text', category: 'text' })
+
+var mongooseDelete = require('mongoose-delete');
+productSchema.plugin(mongooseDelete,{deteledAt:true ,overrideMethods: true}) 
 module.exports=mongoose.model('Product',productSchema);

@@ -52,4 +52,7 @@ User.methods.isValidPassword=async function(newPassword){
             throw new Error(error);
         }
 }
+
+var mongooseDelete = require('mongoose-delete');
+User.plugin(mongooseDelete,{deteledAt:true ,overrideMethods: true}) //, overrideMethods: true
 module.exports= mongoose.model('User',User);

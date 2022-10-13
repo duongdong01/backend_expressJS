@@ -30,4 +30,6 @@ var orderSchema=new Schema({
 },{timestamps:true});
 
 orderSchema.index({user:1})
+var mongooseDelete = require('mongoose-delete');
+orderSchema.plugin(mongooseDelete,{deteledAt:true ,overrideMethods: true}) 
 module.exports=mongoose.model('Order',orderSchema);

@@ -79,7 +79,7 @@ const Size=require('../models/Size')
    const updateCartItem= async (req,res,next)=>{
         try{
                 const {user,product,_id,size,quantity}={...req.body}
-                console.log(req.body)
+                // console.log(req.body)
                 // const exitCartItem=await Cart.findOne({user,product,size})
                 // if(exitCartItem){
                 //     Cart.deleteOne({user,product,size})

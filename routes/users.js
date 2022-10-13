@@ -12,5 +12,9 @@ const passportConfig=require('../middlewares/passport');
 router.post('/signup',UserController.signUp);
 router.post('/signin',passport.authenticate('local',{session:false}),UserController.signin);
 router.get('/secret',passport.authenticate('jwt',{session:false}),UserController.secret);
+router.get('/',UserController.getUser);
+router.get('/bin',UserController.getUserBin);
+router.delete('/',UserController.deleteUser);
+router.put('/restore',UserController.restoreUser);
 
 module.exports = router;
