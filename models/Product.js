@@ -17,7 +17,8 @@ const productSchema=new Schema({
         max:5
     },
     category:{
-        type:String
+        type:String,
+        required:true
     },
     images:{
         type:[String],

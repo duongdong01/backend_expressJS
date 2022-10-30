@@ -23,6 +23,10 @@ var User=new Schema({
     password:{
         type:String,
         required: true
+    },
+    avatar:{
+        type:String,
+        default:'https://res.cloudinary.com/duong1310/image/upload/v1666660558/Home/avatar/default_enq4bq.jpg'
     }
 },{timestamps:true})
 
@@ -42,6 +46,7 @@ User.pre('save',async function(next){
         next(error)
     }
 })
+
 
 User.methods.isValidPassword=async function(newPassword){
         try{

@@ -4,7 +4,9 @@ const Wishlist = require('../models/Wishlist')
 const OrderItem= require('../models/OrderItem')
 const Order= require('../models/Order')
 const Size=require('../models/Size');
+const Cloudinary= require('../cloudinary/clouddinary')
 var Bluebird = require("bluebird");
+
 
 const searchProductSize = async(query,page,limit,sort)=>{
         const products = await Product.find(query)
@@ -57,7 +59,7 @@ const searchProduct=async (req,res,next)=>{
 const addProduct = async(req,res,next)=>{
     try{
 
-        // console.log("call function add product")
+        console.log("call function add product")
         const {size , ...rest}=req.body;
          const product=  await Product.create(rest);
          const sizeProudct=size.map(size=>({
@@ -65,7 +67,7 @@ const addProduct = async(req,res,next)=>{
             product:product._id
         }))
         await Size.create(sizeProudct);
-        // console.log("thêm thành công ");
+        console.log("thêm thành công ");
         const result={...product,sizes:sizeProudct}
         return  res.status(200).json({ success: true,result ,status: 'Bạn đã thêm sản phẩm thành công' })
 
@@ -131,6 +133,7 @@ const restoreProduct= async(req,res,next)=>{
         await Product.restore({_id})
         await OrderItem.restore({product: _id})
         const orderItemId = await OrderItem.find({product:_id})
+        //check lại
         await Order.restore({_id :{ $in : orderItemId.order}})
         res.status(200).json({success:true})
     }
@@ -140,11 +143,42 @@ const restoreProduct= async(req,res,next)=>{
 
 }
 
+const editProduct= async ( req, res, next)=>{
+    try{
+            const {imagesDelete,formData}= {...req.body}
+
+            const {_id,name,category,description,sizes,images,price,originalPrice}={...formData}
+
+            await Product.findByIdAndUpdate(_id,{$set :{ images:[] } },{multi:true})
+            await Product.findByIdAndUpdate(_id,{$set: {name,category,description,images,price,originalPrice }})
+
+            await Size.deleteMany({product:_id})
+            sizesUpdate= sizes.map(item=>({
+                ...item,
+                product:_id
+             }))
+             
+             await Size.create(sizesUpdate)
+            //  console.log("image xoa",imageDelete)
+             if(imagesDelete.length>0){
+                 await Cloudinary.delteImage(imagesDelete);             
+                }
+                else{
+                    console.log("khong co img xoa")
+                }
+                // console.log("call")
+            res.status(200).json({success:true})
+    }catch(error){
+        next(error)
+    }
+}
+
 module.exports={
     addProduct,
     searchProduct,
     getProductId,
     deleteProduct,
     restoreProduct,
-    getProductBin
+    getProductBin,
+    editProduct
 }

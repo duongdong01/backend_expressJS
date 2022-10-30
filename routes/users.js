@@ -16,5 +16,9 @@ router.get('/',UserController.getUser);
 router.get('/bin',UserController.getUserBin);
 router.delete('/',UserController.deleteUser);
 router.put('/restore',UserController.restoreUser);
+router.put('/:userId',UserController.editAvatar);
+router.post('/reset',UserController.resetPass);
+router.post('/forgot/otp',UserController.sendOtp);
+router.post('/forgot/newpass',UserController.forgotPass);
 
 module.exports = router;

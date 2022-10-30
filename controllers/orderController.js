@@ -44,7 +44,6 @@ const getOrder=async (req,res,next)=>{
             const {status,user,cancel,limit,page}={...req.query}
             console.log("query: ",req.query)
             const listOrder=await searchOrderPage({status,user,cancel},limit,page)
-            // console.log("listOrder: ",listOrder[0].items)
             res.status(200).json({success:true,listOrder})
         }   
         catch(error){
@@ -62,7 +61,6 @@ const createOrder=async (req,res,next)=>{
             order:newOrder._id,
             ...item,
         }))
-        // console.log(newOrder)
         const createOrderItem=await OrderItem.create(newOrderItem)
         Bluebird.map(cartItem,async(item)=>{
             await Size.updateOne(
